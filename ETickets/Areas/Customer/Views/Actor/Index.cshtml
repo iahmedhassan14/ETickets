@@ -1,0 +1,120 @@
+﻿@model ActorsWithMoviesVM
+
+<div class="container py-5">
+    <div class="row" style="display: flex; flex-wrap: wrap;">
+        <!-- Actor Profile Section -->
+        <div class="col-md-4" style="display: flex; margin-top: 30px;">
+            <div class="card actor-profile-card" style="width: 100%;">
+                <img src="/assets/img/cast/@Model.Actors.ProfilePicture"
+                     class="card-img-top actor-profile-image"
+                     alt="@Model.Actors.FirstName @Model.Actors.LastName">
+                <div class="card-body">
+                    <h1 class="card-title">@Model.Actors.FirstName @Model.Actors.LastName</h1>
+                    <p class="card-text">@Model.Actors.Bio</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actor Movies Section -->
+        <div class="col-md-8" style="display: flex;">
+            <div class="actor-movies-section" style="width: 100%;">
+                <h2 class="mb-4">Filmography</h2>
+
+                @if (Model.Movies.Any())
+                {
+                    <div class="row">
+                        @foreach (var movie in Model.Movies)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="card movie-card h-100">
+                                    <a href="~/customer/Movie/@movie.Id">
+                                        <img src="/assets/img/Movies/@movie.ImgUrl"
+                                             class="card-img-top"
+                                             alt="@movie.Name">
+                                    </a>
+                                    <div class="card-body">
+                                        <h5 class="card-title">@movie.Name</h5>
+                                        <div class="movie-tags mb-2">
+                                            @foreach (var category in movie.Categories.Take(2))
+                                            {
+                                                <span class="badge bg-primary me-1">@category.Name</span>
+                                            }
+                                            <span class="text-muted">• @movie.PgRate</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="text-center py-5">
+                            <i class="bi bi-film text-muted" style="font-size: 3rem;"></i>
+                            <h4 class="mt-3 text-muted">No movies found</h4>
+                            <p class="text-muted">This actor hasn't been in any movies yet.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .actor-profile-card {
+        border: none;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+
+    }
+
+    .actor-profile-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .actor-movies-section {
+        background-color: #f8f9fa;
+        padding: 30px;
+        border-radius: 8px;
+        min-height: 650px;
+    }
+
+    .movie-card {
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease;
+    }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .movie-card .card-body {
+            flex-grow: 1;
+        }
+
+    @@media (max-width: 767.98px) {
+        .row {
+            flex-direction: column;
+        }
+
+        .col-md-4, .col-md-8 {
+            width: 100%;
+        }
+
+        .actor-movies-section {
+            min-height: auto;
+            margin-top: 20px;
+        }
+    }
+
+    @@media (min-width: 768px) {
+        .actor-movies-section {
+            min-height: calc(100vh - 200px);
+        }
+    }
+</style>

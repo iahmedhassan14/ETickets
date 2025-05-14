@@ -1,0 +1,164 @@
+﻿@model MoviesWithCategoriesWithActorsWithCinemasVM
+@{
+    var movie = Model.Movies.First();
+    var today = DateTime.Today;
+}
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 align-items-center">
+            <div class="col-md-6">
+                <div class="movie-details-image-container">
+                    <img class="movie-image mb-5 mb-md-0" src="/assets/img/movies/@movie.ImgUrl" alt="Movie Poster" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h1 class="display-5 fw-bolder mb-3">@movie.Name</h1>
+
+                <div class="movie-tags mb-4">
+                    @if (movie.Categories.Any())
+                    {
+                        <span class="badge bg-primary me-1">@movie.Categories.First().Name</span>
+                        @foreach (var category in movie.Categories.Skip(1))
+                        {
+                            <span class="badge bg-secondary me-1">@category.Name</span>
+                        }
+                    }
+                    <span class="text-muted ms-2">• @movie.PgRate</span>
+                </div>
+
+                <div class="fs-5 mb-4">
+                    <span class="text-danger fw-bold">@movie.Price.ToString("C")</span>
+                </div>
+
+                <p class="lead mb-4">@movie.Description</p>
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="me-3" style="width: 100px;">
+                        <select class="form-select" id="showtimeSelect">
+                            <option selected>Showtimes</option>
+                            <option value="1">3:00 PM</option>
+                            <option value="2">6:30 PM</option>
+                            <option value="3">9:15 PM</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary flex-shrink-0 py-2 px-4" type="button">
+                        <i class="bi bi-ticket-perforated me-2"></i>
+                        Book Now
+                    </button>
+                </div>
+
+                <!-- Movie Status Badge -->
+                @if (movie.StartDate > today)
+                {
+                    <span class="badge bg-warning text-dark mb-4">Coming Soon: @movie.StartDate.ToString("MMM dd")</span>
+                }
+                else if (movie.EndDate < today)
+                {
+                    <span class="badge bg-danger mb-4">No Longer Showing</span>
+                }
+                else
+                {
+                    <span class="badge bg-success mb-4">Now Showing</span>
+                }
+            </div>
+        </div>
+
+        <!-- Trailer Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">Official Trailer</h3>
+                <div class="ratio ratio-16x9">
+                    @{
+                        // Extract YouTube video ID from the URL
+                        var trailerUrl = movie.TrailerUrl;
+                        string videoId = null;
+
+                        if (trailerUrl.Contains("youtube.com/watch?v="))
+                        {
+                            videoId = trailerUrl.Split(new string[] { "v=" }, StringSplitOptions.None)[1];
+                            if (videoId.Contains("&"))
+                                videoId = videoId.Split('&')[0];
+                        }
+                        else if (trailerUrl.Contains("youtu.be/"))
+                        {
+                            videoId = trailerUrl.Split(new string[] { "youtu.be/" }, StringSplitOptions.None)[1];
+                            if (videoId.Contains("?"))
+                                videoId = videoId.Split('?')[0];
+                        }
+                    }
+
+                    @if (videoId != null)
+                    {
+                        <iframe src="https://www.youtube.com/embed/@videoId"
+                                title="@movie.Name Trailer"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center bg-light" style="height: 100%;">
+                            <p class="text-muted">Trailer not available</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Cast Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">Cast</h3>
+                <div class="cast-container d-flex flex-wrap gap-4">
+                    @foreach (var actor in movie.Actors)
+                    {
+                        <div class="cast-member text-center">
+                            <a href="~/customer/actor/@actor.Id">
+                                <div class="actor-avatar">
+                                    <img src="/assets/img/cast/@actor.ProfilePicture"
+                                         alt="@actor.FirstName @actor.LastName"
+                                         class="rounded-circle">
+                                </div>
+                            </a>
+                            <div class="actor-info mt-2">
+                                <h6 class="mb-0">@actor.FirstName @actor.LastName</h6>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Cinemas Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">Available Cinemas</h3>
+                <div class="cinema-scroller d-flex gap-3 pb-3" style="overflow-x: auto;">
+                    @foreach (var cinema in movie.Cinemas)
+                    {
+                        <div class="cinema-card flex-shrink-0" style="width: 300px;">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">@cinema.Name</h5>
+                                    <p class="card-text text-muted">
+                                        <i class="bi bi-geo-alt"></i> @cinema.Address
+                                    </p>
+                                    <div class="showtimes">
+                                        <h6>Showtimes:</h6>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <span class="badge bg-light text-dark">3:00 PM</span>
+                                            <span class="badge bg-light text-dark">6:30 PM</span>
+                                            <span class="badge bg-light text-dark">9:15 PM</span>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="btn btn-outline-primary mt-3 w-100">
+                                        <i class="bi bi-map"></i> Directions
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

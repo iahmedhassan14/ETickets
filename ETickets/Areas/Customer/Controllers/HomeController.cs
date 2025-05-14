@@ -8,10 +8,12 @@ using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.View;
 
 namespace ETickets.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context = new();
+
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -25,8 +27,7 @@ namespace ETickets.Areas.Customer.Controllers
 
             MoviesWithCategoriesVM MoviesWithCategoriesVM = new()
             {
-                Movies = movies.ToList(),
-                Categories = categories.ToList()
+                Movies = _context.Movies.Include(m => m.Categories).ToList()
             };
             return View(MoviesWithCategoriesVM);
         }

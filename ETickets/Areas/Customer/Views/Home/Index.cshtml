@@ -1,37 +1,152 @@
 ﻿@model MoviesWithCategoriesVM
-<header class="masthead">
-    <div class="container position-relative">
-        <div class="row justify-content-center">
-            <div class="col-xl-6">
-                <div class="text-center text-white">
-                    <h1 class="mb-5">Generate more leads with a professional landing page!</h1>
+@{
+    var today = DateTime.Today;
+    var nowShowingMovies = Model.Movies.Where(m => m.StartDate <= today && m.EndDate >= today).ToList();
+    var comingSoonMovies = Model.Movies.Where(m => m.StartDate > today && m.StartDate <= today.AddDays(7)).ToList();
+    var expiredMovies = Model.Movies.Where(m => m.EndDate < today).ToList();
+}
+<!-- Header-->
+<header class="masthead text-center text-white position-relative">
+    <div class="swiper headerSwiper">
+        <div class="swiper-wrapper">
+            <!-- Slide 1 -->
+            <div class="swiper-slide">
+                <div class="masthead-content slide-content" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), url('https://source.unsplash.com/random/1920x1080/?movie,cinema');">
+                    <div class="container px-5">
+                        <h1 class="masthead-heading mb-0">Now Showing</h1>
+                        <h2 class="masthead-subheading mb-0">Dune: Part Two</h2>
+                        <a class="btn btn-primary btn-xl rounded-pill mt-5" href="#movies">Book Tickets</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="swiper-slide">
+                <div class="masthead-content slide-content" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), url('https://source.unsplash.com/random/1920x1080/?film,action');">
+                    <div class="container px-5">
+                        <h1 class="masthead-heading mb-0">Coming Soon</h1>
+                        <h2 class="masthead-subheading mb-0">The Batman Returns</h2>
+                        <a class="btn btn-primary btn-xl rounded-pill mt-5" href="#coming-soon">Notify Me</a>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
     </div>
+
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
 </header>
-    <div class="container py-5">
-        <div class="row">
-            @foreach (var item in Model.Movies)
+
+<!-- Now Showing Section -->
+<div class="container py-5" id="now-showing">
+    <div class="series-header mb-5">
+        <h1>NOW SHOWING</h1>
+    </div>
+
+    <div class="row">
+        @foreach (var item in nowShowingMovies)
         {
             <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card movie-card h-100">
-                    <img src="/assets/img/Movies/@item.ImgUrl" class="card-img-top">
-                    <div class="card-body">
+                    <div class="movie-image-container">
+                        <img src="/assets/img/Movies/@item.ImgUrl" class="movie-image">
+                    </div>
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">@item.Name</h5>
-                        <p class="card-text text-muted">@foreach (var category in Model.Categories)
+                        <div class="movie-tags mb-2">
+                            @if (item.Categories.Any())
                             {
-                                
-                                @category.Name
+                                <span class="badge bg-primary me-1">@item.Categories.First().Name</span>
+                                @foreach (var category in item.Categories.Skip(1))
+                                {
+                                    <span class="badge bg-secondary me-1">@category.Name</span>
+                                }
                             }
-                            
-                            
-                            • @item.PgRate</p>
-                        <a href="#" class="btn btn-primary w-100">Book Now</a>
+                            <span class="text-muted">• @item.PgRate</span>
+                        </div>
+                        <a href="/customer/movie/@item.Id" class="btn btn-primary mt-auto">Book Now</a>
                     </div>
                 </div>
             </div>
         }
-            
+    </div>
+</div>
+<!-- Coming Soon Section -->
+@if (comingSoonMovies.Any())
+{
+    <div class="container py-5" id="coming-soon">
+        <div class="series-header mb-5">
+            <h1>COMING SOON</h1>
+        </div>
+
+        <div class="row">
+            @foreach (var item in comingSoonMovies)
+            {
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card movie-card h-100 coming-soon">
+                        <div class="movie-image-container">
+                            <img src="/assets/img/Movies/@item.ImgUrl" class="movie-image">
+                            <div class="coming-soon-badge">Coming Soon</div>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@item.Name</h5>
+                            <div class="movie-tags mb-2">
+                                @if (item.Categories.Any())
+                                {
+                                    <span class="badge bg-primary me-1">@item.Categories.First().Name</span>
+                                    @foreach (var category in item.Categories.Skip(1))
+                                    {
+                                        <span class="badge bg-secondary me-1">@category.Name</span>
+                                    }
+                                }
+                                <span class="text-muted">• @item.PgRate</span>
+                            </div>
+                            <small class="text-muted mb-2">Releases @item.StartDate.ToString("MMM dd")</small>
+                            <button class="btn btn-outline-secondary mt-auto" disabled>Notify Me</button>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
+}
+<!-- Expired Section -->
+@if (expiredMovies.Any())
+{
+    <div class="container py-5" id="expired">
+        <div class="series-header mb-5">
+            <h1>EXPIRED</h1>
+            <p class="text-muted">Movies that recently left cinemas</p>
+        </div>
+
+        <div class="row">
+            @foreach (var item in expiredMovies.OrderByDescending(m => m.EndDate).Take(8))
+            {
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="card movie-card h-100 expired">
+                        <div class="movie-image-container">
+                            <img src="/assets/img/Movies/@item.ImgUrl" class="movie-image">
+                            <div class="expired-badge">Ended</div>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@item.Name</h5>
+                            <div class="movie-tags mb-2">
+                                @foreach (var category in item.Categories.Take(2))
+                                {
+                                    <span class="badge bg-secondary me-1">@category.Name</span>
+                                }
+                                <span class="text-muted">• @item.PgRate</span>
+                            </div>
+                            <small class="text-muted mb-2">Ended @item.EndDate.ToString("MMM dd")</small>
+                            <button class="btn btn-outline-secondary mt-auto" disabled>No Longer Available</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

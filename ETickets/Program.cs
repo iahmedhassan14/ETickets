@@ -29,7 +29,14 @@ namespace ETickets
                 name: "default",
                 pattern: "{Area=Customer}/{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
-
+            app.MapControllerRoute(
+                name: "movieDetails",
+                pattern: "Customer/movie/{id}",
+                defaults: new { area = "Customer", controller = "Movie", action = "Index" });
+            app.MapControllerRoute(
+                name: "actorDetails",
+                pattern: "Customer/actor/{id}",
+                defaults: new { area = "Customer", controller = "Actor", action = "Index" });
             app.Run();
         }
     }
