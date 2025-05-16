@@ -13,17 +13,17 @@ namespace ETickets.Areas.Customer.Controllers
         public IActionResult Index(int id)
         {
             var movie = _context.Movies
-                            .Include(m => m.Categories)
-                            .Include(m => m.Actors)
-                            .Include(m => m.Cinemas)
-                            .FirstOrDefault(m => m.Id == id);
+                            .Include(e => e.Categories)
+                            .Include(e => e.Actors)
+                            .Include(e => e.Cinemas)
+                            .FirstOrDefault(e => e.Id == id);
 
             if (movie == null)
             {
-                return NotFound();
+                return RedirectToAction("Index", "Home");
             }
 
-            var viewModel = new MoviesWithCategoriesWithActorsWithCinemasVM
+            MoviesWithCategoriesWithActorsWithCinemasVM MoviesWithCategoriesWithActorsWithCinemasVM = new()
             {
                 Movies = new List<Movie> { movie },
                 Categories = _context.Categories.ToList(),
@@ -32,7 +32,7 @@ namespace ETickets.Areas.Customer.Controllers
             };
 
 
-            return View(viewModel);
+            return View(MoviesWithCategoriesWithActorsWithCinemasVM);
         }
     
     }

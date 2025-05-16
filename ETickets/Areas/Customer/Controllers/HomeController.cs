@@ -27,9 +27,13 @@ namespace ETickets.Areas.Customer.Controllers
 
             MoviesWithCategoriesVM MoviesWithCategoriesVM = new()
             {
-                Movies = _context.Movies.Include(m => m.Categories).ToList()
+                Movies = _context.Movies.Include(e => e.Categories).ToList()
             };
             return View(MoviesWithCategoriesVM);
+        }
+        public IActionResult NotFoundPage()
+        {
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

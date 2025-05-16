@@ -12,13 +12,13 @@ namespace ETickets.Areas.Customer.Controllers
         public IActionResult Index(int id)
         {
             var actor = _context.Actors
-                .Include(a => a.Movies)
-                    .ThenInclude(m => m.Categories)
-                .FirstOrDefault(a => a.Id == id);
+                .Include(e => e.Movies)
+                    .ThenInclude(x => x.Categories)
+                .FirstOrDefault(e => e.Id == id);
             
             if (actor == null)
             {
-                return NotFound();
+                return RedirectToAction("Index" , "Home");
             }
 
             ActorsWithMoviesVM ActorsWithMoviesVM = new()

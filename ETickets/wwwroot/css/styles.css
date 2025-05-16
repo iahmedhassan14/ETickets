@@ -11149,6 +11149,38 @@ header.masthead .bg-circle-4 {
     transition: transform 0.3s;
 }
 
-    .cinema-card .card:hover {
+.cinema-card .card:hover {
         transform: translateY(-5px);
-    }
+}
+
+.error-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.error-content {
+    max-width: 600px;
+    text-align: center;
+    padding: 2.2rem;
+}
+
+.error-code {
+    font-size: 5rem;
+    font-weight: 700;
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+.error-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.error-message {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
