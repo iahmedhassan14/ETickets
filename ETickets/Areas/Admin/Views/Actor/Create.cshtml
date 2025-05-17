@@ -1,0 +1,48 @@
+﻿<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="display-6">Create New Actor</h2>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <form method="post" enctype="multipart/form-data">
+                <!-- First Name -->
+                <div class="mb-3">
+                    <label for="FirstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="FirstName" name="FirstName" placeholder="Enter first name" required>
+                </div>
+
+                <!-- Last Name -->
+                <div class="mb-3">
+                    <label for="LastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="LastName" name="LastName" placeholder="Enter last name" required>
+                </div>
+
+                <!-- Bio -->
+                <div class="mb-3">
+                    <label for="Bio" class="form-label">Biography</label>
+                    <textarea class="form-control" id="Bio" name="Bio" rows="3" placeholder="Enter actor's biography"></textarea>
+                </div>
+
+                <!-- News -->
+                <div class="mb-3">
+                    <label for="News" class="form-label">News</label>
+                    <textarea class="form-control" id="News" name="News" rows="2" placeholder="Enter any news about the actor"></textarea>
+                </div>
+
+                <!-- Profile Picture Upload -->
+                <div class="mb-4">
+                    <label for="ProfilePicture" class="form-label">Profile Picture</label>
+                    <input class="form-control" type="file" id="ProfilePicture" name="ProfilePicture" accept="image/*">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Create Actor</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

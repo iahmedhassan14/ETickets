@@ -1,0 +1,43 @@
+﻿@model Actor
+<div class="container">
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-12">
+            <h2 class="display-6">Edit Actor</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <form method="post">
+
+                <div class="mb-3">
+                    <label class="form-label"></label>
+                    <input type="text" class="form-control" placeholder="First Name" asp-for="FirstName">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"></label>
+                    <input type="text" class="form-control" placeholder="Last Name" asp-for="LastName">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"></label>
+                    <textarea class="form-control" placeholder="Bio" asp-for="Bio" rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"></label>
+                    <input type="text" class="form-control" placeholder="News" asp-for="News">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"></label>
+                    <input type="text" class="form-control" placeholder="Profile Picture URL" asp-for="ProfilePicture">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

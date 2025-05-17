@@ -11325,3 +11325,10 @@ body.sidebar-toggled footer.sticky-footer {
         color: red;
         text-decoration-line: none;
     }
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.btn-group {
+    white-space: nowrap;
+}
