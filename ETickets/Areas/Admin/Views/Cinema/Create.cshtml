@@ -1,0 +1,40 @@
+﻿<div class="container col-12">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="display-6">Create New Cinema</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <form method="post" enctype="multipart/form-data">
+                <!-- First Name -->
+                <div class="mb-3">
+                    <label for="Name" class="form-label">Cinema Name</label>
+                    <input type="text" class="form-control" id="Name" name="Name" placeholder="Enter Cinema name" required>
+                </div>
+
+                <!-- Bio -->
+                <div class="mb-3">
+                    <label for="Description" class="form-label">Description</label>
+                    <textarea class="form-control" id="Description" name="Description" rows="3" placeholder="Enter Cinema's Description"></textarea>
+                </div>
+
+                <!-- News -->
+                <div class="mb-3">
+                    <label for="Address" class="form-label">Address</label>
+                    <textarea class="form-control" id="Address" name="Address" rows="2" placeholder="Enter Cinema's Address"></textarea>
+                </div>
+
+                <!-- Profile Picture Upload -->
+                <div class="mb-4">
+                    <label for="CinemaLogo" class="form-label">Cinema Logo</label>
+                    <input class="form-control" type="file" id="CinemaLogo" name="CinemaLogo" accept="image/*">
+                </div>
+
+                <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg">Create Cinema</button>
+            </form>
+        </div>
+    </div>
+</div>

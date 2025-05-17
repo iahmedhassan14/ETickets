@@ -1,14 +1,14 @@
-﻿@model IEnumerable<Actor>
+﻿@model IEnumerable<Cinema>
 
 <div class="container col-12">
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
-            <h2 class="display-6 mb-0">All Actors</h2>
+            <h2 class="display-6 mb-0">All Cinemas</h2>
         </div>
         <div class="col-md-6 text-md-end">
-            <a asp-area="Admin" asp-controller="Actor" asp-action="Create"
+            <a asp-area="Admin" asp-controller="Cinema" asp-action="Create"
                class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Add New Actor
+                <i class="fas fa-plus me-2"></i>Add New Cinema
             </a>
         </div>
     </div>
@@ -20,9 +20,9 @@
                     <thead class="table-light">
                         <tr>
                             <th scope="col" width="5%">#</th>
-                            <th scope="col">First Name</th>
-                            <th scope="col">Last Name</th>
-                            <th scope="col">Bio</th>
+                            <th scope="col">Cinema Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Address</th>
                             <th scope="col" width="15%" class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -30,34 +30,34 @@
                         @{
                             int counter = 1;
                         }
-                        @foreach (var actor in Model)
+                        @foreach (var item in Model)
                         {
                             <tr>
                                 <th scope="row">@(counter++)</th>
-                                <td>@actor.FirstName</td>
-                                <td>@actor.LastName</td>
+                                <td>@item.Name</td>
                                 <td>
-                                    @if (!string.IsNullOrEmpty(actor.Bio))
+                                    @if (!string.IsNullOrEmpty(item.Description))
                                     {
                                         <span class="bio-preview"
                                               data-bs-toggle="tooltip"
                                               data-bs-placement="top"
-                                              title="@actor.Bio">
-                                            @(actor.Bio.Length > 50 ? actor.Bio.Substring(0, 50) + "..." : actor.Bio)
+                                              title="@item.Description">
+                                            @(item.Description.Length > 50 ? item.Description.Substring(0, 80) + "..." : item.Description)
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="text-muted">No bio available</span>
+                                        <span class="text-muted">No Description available</span>
                                     }
                                 </td>
+                                <td>@item.Address</td>
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
-                                        <a asp-area="Admin" asp-controller="Actor" asp-action="Edit" asp-route-id="@actor.Id"
+                                        <a asp-area="Admin" asp-controller="Cinema" asp-action="Edit" asp-route-id="@item.Id"
                                            class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
-                                        <a asp-area="Admin" asp-controller="Actor" asp-action="Delete" asp-route-id="@actor.Id"
+                                        <a asp-area="Admin" asp-controller="Cinema" asp-action="Delete" asp-route-id="@item.Id"
                                            class="btn btn-sm btn-outline-danger ms-2 delete-btn">
                                             <i class="fas fa-trash"></i> Delete
                                         </a>

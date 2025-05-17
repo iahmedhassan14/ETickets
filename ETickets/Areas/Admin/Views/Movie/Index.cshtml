@@ -1,0 +1,83 @@
+﻿@model IEnumerable<MoviesWithCategoriesWithCinemasVM>
+<div class="container col-12">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h2 class="display-6 mb-0">All Movies</h2>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <a asp-area="Admin" asp-controller="Movie" asp-action="Create"
+               class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add New Movie
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" width="5%">#</th>
+                            <th scope="col">Movie Name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Categories</th>
+                            <th scope="col">Cinema</th>
+                            <th scope="col" width="15%" class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int counter = 1;
+                        }
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <th scope="row">@(counter++)</th>
+                                <td>@item.Name</td>
+                                 <td> 
+                                     @if (!string.IsNullOrEmpty(item.Description)) 
+                                     {
+                                        <span class="bio-preview"
+                                              data-bs-toggle="tooltip"
+                                              data-bs-placement="top"
+                                              title="@item.Description">
+                                            @if (!string.IsNullOrEmpty(item.Description))
+                                            {
+                                                @(item.Description.Length > 50 ? item.Description[..Math.Min(80, item.Description.Length)] + "..." : item.Description)
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">No description available</span>
+                                            }
+                                        </span>
+                                     } 
+                                     else 
+                                     { 
+                                         <span class="text-muted">No Description available</span> 
+                                     } 
+                                 </td> 
+                                <td>@item.Price</td>
+                                <td>@item.Categories</td>
+                                <td>@item.Cinemas</td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-area="Admin" asp-controller="Movie" asp-action="Edit" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a asp-area="Admin" asp-controller="Movie" asp-action="Delete" asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger ms-2 delete-btn">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
