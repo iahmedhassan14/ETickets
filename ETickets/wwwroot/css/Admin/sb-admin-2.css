@@ -11332,3 +11332,10 @@ body.sidebar-toggled footer.sticky-footer {
 .btn-group {
     white-space: nowrap;
 }
+
+#imagePreview {
+    min-height: 100px;
+    border: 1px dashed #ccc;
+    padding: 10px;
+    margin-top: 10px;
+}

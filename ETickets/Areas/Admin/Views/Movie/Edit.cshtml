@@ -4,122 +4,374 @@
     ViewBag.Categories = ViewBag.Categories ?? new List<Category>();
     ViewBag.Actors = ViewBag.Actors ?? new List<Actor>();
     ViewBag.Cinemas = ViewBag.Cinemas ?? new List<Cinema>();
+    ViewBag.Title = "Edit Movie";
 }
 
 <div class="container col-12">
+    <!-- Toastr Notifications -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="toast align-items-center text-white bg-success position-absolute top-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["Success"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="toast align-items-center text-white bg-danger position-absolute top-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["Error"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+
     <div class="row">
         <div class="col-12">
-            <h2 class="display-6">Edit Movie</h2>
+            <h2 class="display-6">@ViewBag.Title</h2>
+            <hr />
         </div>
     </div>
 
     <div class="row">
         <div class="col-12">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data" id="movieForm">
                 <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ImgUrl" />
+                <input type="hidden" id="removeImageFlag" name="removeImageFlag" value="false">
 
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Movie Name" asp-for="Name">
+                <!-- Basic Info Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Basic Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Name" class="form-label">Movie Name*</label>
+                                <input type="text" class="form-control" placeholder="Enter movie name" asp-for="Name" required>
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Price" class="form-label">Price*</label>
+                                <input type="number" step="0.01" min="0" class="form-control" placeholder="Enter price" asp-for="Price" required>
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Description*</label>
+                            <textarea class="form-control" placeholder="Enter description" asp-for="Description" rows="3" required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <textarea class="form-control" placeholder="Description" asp-for="Description" rows="3"></textarea>
+                <!-- Dates Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Dates</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StartDate" class="form-label">Start Date*</label>
+                                <input type="date" class="form-control" asp-for="StartDate" required>
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EndDate" class="form-label">End Date*</label>
+                                <input type="date" class="form-control" asp-for="EndDate" required>
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <input type="number" step="0.01" class="form-control" placeholder="Price" asp-for="Price">
+                <!-- Additional Info Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Additional Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="MovieStatus" class="form-label">Status*</label>
+                                <select class="form-select" asp-for="MovieStatus" required>
+                                    <option value="">Select status</option>
+                                    <option value="0">NOW SHOWING</option>
+                                    <option value="1">COMING SOON</option>
+                                    <option value="2">Ended</option>
+                                </select>
+                                <span asp-validation-for="MovieStatus" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="MovieRate" class="form-label">Rating*</label>
+                                <select class="form-select" asp-for="MovieRate" required>
+                                    <option value="">Select rating</option>
+                                    @for (int i = 1; i <= 10; i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="MovieRate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="PgRate" class="form-label">PG Rating*</label>
+                                <select class="form-select" asp-for="PgRate" required>
+                                    <option value="">Select rating</option>
+                                    <option value="Rated-G">G - General Audiences</option>
+                                    <option value="Rated-PG">PG - Parental Guidance</option>
+                                    <option value="Rated-PG-13">PG-13 - Parents Strongly Cautioned</option>
+                                    <option value="Rated-R">R - Restricted</option>
+                                </select>
+                                <span asp-validation-for="PgRate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TrailerUrl" class="form-label">Trailer URL</label>
+                            <input type="url" class="form-control" placeholder="Enter YouTube trailer URL" asp-for="TrailerUrl">
+                            <span asp-validation-for="TrailerUrl" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Tags" class="form-label">Tags</label>
+                            <input type="text" class="form-control" placeholder="Enter comma-separated tags" asp-for="Tags">
+                            <span asp-validation-for="Tags" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Image Upload Section -->
                 <div class="mb-3">
-                    <input type="date" class="form-control" asp-for="StartDate">
-                </div>
-
-                <div class="mb-3">
-                    <input type="date" class="form-control" asp-for="EndDate">
-                </div>
-
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Trailer URL" asp-for="TrailerUrl">
-                </div>
-
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Status" asp-for="MovieStatus">
-                </div>
-
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Rating" asp-for="MovieRate">
-                </div>
-
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="PG Rating" asp-for="PgRate">
-                </div>
-
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Tags" asp-for="Tags">
-                </div>
-
-                <div class="mb-3">
-                    <input type="text" class="form-control" placeholder="Image URL" asp-for="ImgUrl">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Categories</label>
-                    <select class="form-select" multiple name="categoryIds">
-                        @foreach (var category in ViewBag.Categories)
+                    <label class="form-label">Movie Image</label>
+                    <input type="file" class="form-control" name="ImgUrl" accept="image/*" id="imageUpload">
+                    <div class="mt-2" id="imagePreview">
+                        @if (!string.IsNullOrEmpty(Model.ImgUrl))
                         {
-                            var isSelected = Model.Categories.Any(c => c.Id == category.Id);
-                            <option value="@category.Id" selected="@(isSelected ? "selected" : null)">
-                                @category.Name
-                            </option>
+                            <img src="/assets/img/Movies/@Model.ImgUrl" class="img-thumbnail" width="150" id="currentImage">
                         }
-                    </select>
+                    </div>
+                    <span id="imageValidation" class="text-danger"></span>
                 </div>
 
+                <!-- Relationships Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5>Relationships</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Categories*</label>
+                            <select class="form-select" multiple name="Categories" id="categoriesSelect" required>
+                                @foreach (var category in ViewBag.Categories)
+                                {
+                                    var isSelected = Model.Categories?.Any(c => c.Id == category.Id) ?? false;
+                                    <option value="@category.Id" selected="@(isSelected ? "selected" : null)">
+                                        @category.Name
+                                    </option>
+                                }
+                            </select>
+                            <span id="categoriesValidation" class="text-danger"></span>
+                        </div>
 
-                
-                <div class="mb-3">
-                    <label class="form-label">Actors</label>
-                    <select class="form-select" multiple name="actorIds">
-                        @foreach (var actor in ViewBag.Actors)
-                        {
-                            var isSelected = Model.Actors.Any(a => a.Id == actor.Id);
-                            <option value="@actor.Id" selected="@(isSelected ? "selected" : null)">
-                                @actor.FirstName @actor.LastName
-                            </option>
-                        }
-                    </select>
+                        <div class="mb-3">
+                            <label class="form-label">Actors*</label>
+                            <select class="form-select" multiple name="Actors" id="actorsSelect" required>
+                                @foreach (var actor in ViewBag.Actors)
+                                {
+                                    var isSelected = Model.Actors?.Any(a => a.Id == actor.Id) ?? false;
+                                    <option value="@actor.Id" selected="@(isSelected ? "selected" : null)">
+                                        @actor.FullName
+                                    </option>
+                                }
+                            </select>
+                            <span id="actorsValidation" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Cinemas*</label>
+                            <select class="form-select" multiple name="Cinemas" id="cinemasSelect" required>
+                                @foreach (var cinema in ViewBag.Cinemas)
+                                {
+                                    var isSelected = Model.Cinemas?.Any(c => c.Id == cinema.Id) ?? false;
+                                    <option value="@cinema.Id" selected="@(isSelected ? "selected" : null)">
+                                        @cinema.Name
+                                    </option>
+                                }
+                            </select>
+                            <span id="cinemasValidation" class="text-danger"></span>
+                        </div>
+                    </div>
                 </div>
 
-                
-                <div class="mb-3">
-                    <label class="form-label">Cinemas</label>
-                    <select class="form-select" multiple name="cinemaIds">
-                        @foreach (var cinema in ViewBag.Cinemas)
-                        {
-                            var isSelected = Model.Cinemas.Any(c => c.Id == cinema.Id);
-                            <option value="@cinema.Id" selected="@(isSelected ? "selected" : null)">
-                                @cinema.Name
-                            </option>
-                        }
-                    </select>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-success me-md-2">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
                 </div>
-
-
-                <button type="submit" class="btn btn-success">Save Changes</button>
             </form>
         </div>
     </div>
 </div>
 
-@section Scripts {
+@section AdminScripts {
+    <!-- Select2 CSS/JS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
+            // Initialize Select2
             $('select[multiple]').select2({
                 placeholder: "Select options",
-                allowClear: true
+                allowClear: true,
+                width: '100%'
             });
+
+            // Show toasts if any
+            $('.toast').toast('show');
+
+            // Enhanced image preview functionality
+            $('#imageUpload').on('change', function() {
+                const file = this.files[0];
+                const preview = $('#imagePreview');
+                const validation = $('#imageValidation');
+
+                validation.text('');
+
+                if (file) {
+                    // Validate file type
+                    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    if (!validTypes.includes(file.type)) {
+                        validation.text('Only JPG, PNG or GIF images are allowed');
+                        $(this).val('');
+                        return;
+                    }
+
+                    // Validate file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        validation.text('Image must be smaller than 5MB');
+                        $(this).val('');
+                        return;
+                    }
+
+                    // Preview image
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Remove existing preview if any
+                        preview.find('img').not('#currentImage').remove();
+                        // Add new preview
+                        preview.append(`<img src="${e.target.result}" class="img-thumbnail" width="200">`);
+                    }
+                    reader.onerror = function() {
+                        validation.text('Error reading image file');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Form submission handler
+            $('#movieForm').on('submit', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const submitBtn = $('#submitBtn');
+
+                // Validate form
+                if (!validateForm()) {
+                    return;
+                }
+
+                // Show loading state
+                submitBtn.prop('disabled', true);
+                submitBtn.html('<span class="spinner-border spinner-border-sm"></span> Saving...');
+
+                // Submit form via AJAX
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success('Movie updated successfully!');
+                            setTimeout(() => {
+                                window.location.href = '@Url.Action("Index", "Movie")';
+                            }, 1500);
+                        } else {
+                            toastr.error(response.message || 'Failed to update movie');
+                        }
+                    },
+                    error: function(xhr) {
+                        toastr.error(xhr.responseJSON?.message || 'An error occurred');
+                    },
+                    complete: function() {
+                        submitBtn.prop('disabled', false);
+                        submitBtn.html('<i class="fas fa-save"></i> Save Changes');
+                    }
+                });
+            });
+
+            function validateForm() {
+                let isValid = true;
+                $('.text-danger').text('');
+
+                // Validate multi-selects
+                ['categoriesSelect', 'actorsSelect', 'cinemasSelect'].forEach(id => {
+                    if (!$(`#${id}`).val()?.length) {
+                        $(`#${id}Validation`).text('Please select at least one option');
+                        isValid = false;
+                    }
+                });
+
+                // Validate required fields
+                $('[required]').each(function() {
+                    if (!$(this).val()) {
+                        $(this).next('.text-danger').text('This field is required');
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    $('html, body').animate({
+                        scrollTop: $('.text-danger:visible').first().offset().top - 100
+                    }, 500);
+                }
+
+                return isValid;
+            }
         });
+
+        function removeImage(button) {
+            // Hide the current image
+            $(button).closest('.position-relative').hide();
+
+            // Clear any new image selection
+            $('#imageUpload').val('');
+            $('#imagePreview').find('img').not('#currentImage').remove();
+
+            // Set flag to remove image
+            $('#removeImageFlag').val('true');
+
+            // Show confirmation
+            toastr.info('Current image will be removed when you save changes.', '', {
+                timeOut: 3000,
+                positionClass: 'toast-bottom-right'
+            });
+        }
     </script>
 }
