@@ -1,40 +1,103 @@
-﻿<div class="container col-12">
+﻿@model Cinema
+
+@{
+    ViewData["Title"] = "Create Cinema";
+}
+
+<div class="container mt-4">
     <div class="row">
-        <div class="col-12">
-            <h2 class="display-6">Create New Cinema</h2>
-        </div>
-    </div>
+        <div class="col-md-10 offset-md-1">
+            <h2 class="mb-4 text-center">Create New Cinema</h2>
 
-    <div class="row">
-        <div class="col-12">
-            <form method="post" enctype="multipart/form-data">
-                <!-- First Name -->
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
+
+            <form method="post" enctype="multipart/form-data" id="cinemaForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Cinema Name -->
                 <div class="mb-3">
-                    <label for="Name" class="form-label">Cinema Name</label>
-                    <input type="text" class="form-control" id="Name" name="Name" placeholder="Enter Cinema name" required>
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
-                <!-- Bio -->
+                <!-- Description -->
                 <div class="mb-3">
-                    <label for="Description" class="form-label">Description</label>
-                    <textarea class="form-control" id="Description" name="Description" rows="3" placeholder="Enter Cinema's Description"></textarea>
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
-                <!-- News -->
+                <!-- Address -->
                 <div class="mb-3">
-                    <label for="Address" class="form-label">Address</label>
-                    <textarea class="form-control" id="Address" name="Address" rows="2" placeholder="Enter Cinema's Address"></textarea>
+                    <label asp-for="Address" class="form-label"></label>
+                    <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
 
-                <!-- Profile Picture Upload -->
+                <!-- Cinema Logo -->
                 <div class="mb-4">
-                    <label for="CinemaLogo" class="form-label">Cinema Logo</label>
-                    <input class="form-control" type="file" id="CinemaLogo" name="CinemaLogo" accept="image/*">
+                    <label class="form-label">Cinema Logo</label>
+                    <input type="file" name="cinemaLogo" class="form-control" accept="image/*" required />
+                    <small class="form-text text-muted">Upload JPG, PNG, or GIF (Max 5MB)</small>
+                    <span asp-validation-for="CinemaLogo" class="text-danger"></span>
+
+                    <!-- Image Preview -->
+                    <div class="mt-3" id="imagePreviewContainer" style="display: none;">
+                        <img id="imagePreview" class="img-thumbnail" style="max-height: 200px;" />
+                    </div>
                 </div>
 
-                <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary btn-lg">Create Cinema</button>
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Create
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (() => {
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+
+        document.querySelector('input[name="cinemaLogo"]').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('imagePreview');
+            const container = document.getElementById('imagePreviewContainer');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    container.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                container.style.display = 'none';
+            }
+        });
+    </script>
+}
